@@ -1,4 +1,4 @@
-# ReachInbox.AI: React Project
+# CNAPP Dahboard: React Project
 
 ---
 
