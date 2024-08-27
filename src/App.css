@@ -1,0 +1,4 @@
+
+  .truncate {
+    @apply overflow-hidden max-w-[5ch] whitespace-nowrap;
+  }
