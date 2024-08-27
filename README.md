@@ -16,7 +16,7 @@ To install and run this project on your local machine, follow these steps:
 
 1. **Clone Repository:**
    ```bash
-   git clone git@github.com:spriyanshu245/cnapp.git
+   clone https://github.com/spriyanshu245/cnapp-dashboard.git
 
    cd into project
 
