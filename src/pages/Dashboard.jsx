@@ -11,7 +11,7 @@ function Dashboard(props) {
     return (
       <div className="h-screen w-screen dark:bg-black bg-[#ECEFF3]">
         <TopBar onFilter = {handleFilter}/>
-        <MainPage filterdWidget = {data}/>
+        <MainPage filteredWidget = {data}/>
       </div>
     );
   }

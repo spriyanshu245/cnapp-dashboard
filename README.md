@@ -3,12 +3,12 @@
 ---
 
 ## Overview
-A system monitoring Admin Dashboard APP to monitor system health
+A system monitoring Admin Dashboard to monitor system health.  
 
-Initial dummy data is fetched locally from Data.json / can be easily replaced with an api.
-I have used Context Api for state management.
-I have used localstorage to store and manage Remove and Add widget feature to dynamically render data across application.
-Used recharts library to plot pie graphs in widgets
+Initial dummy data is fetched locally from Data.json / can be easily replaced with an api.  
+I have used Context Api for state management.  
+I have used localstorage to store and manage Remove and Add widget feature to dynamically render data across application.  
+Used recharts library to plot pie graphs in widgets.  
 
 ## Installation
 
