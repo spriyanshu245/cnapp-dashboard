@@ -1,39 +1,52 @@
-import { useContext, useState } from 'react';
-import { DataContext } from '../DataContext';
+import { useState } from 'react';
 import { RxCross2 } from 'react-icons/rx';
+import Papa from 'papaparse';
+import { processEVData, rangeDistribution } from './dataProcessor';
 
-const Sidebar = ({ onClose }) => {
-  const { widgetData, setWidgetData } = useContext(DataContext);
-  const categories = widgetData.map((category) => category.category);
-  const [activeTab, setActiveTab] = useState(categories[0]);
-  const [widgetsToRemove, setWidgetsToRemove] = useState([]);
+const Sidebar = ({ setData, onClose }) => {
+  const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleTabChange = (category) => {
-    setActiveTab(category);
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setError(null);
   };
 
-  const handleWidgetRemove = (widgetId) => {
-    setWidgetsToRemove((prevWidgets) => prevWidgets.includes(widgetId) ? prevWidgets.filter((id) => id !== widgetId) : [...prevWidgets, widgetId]);
-  };
+  const handleFileUpload = () => {
+    if (!file) {
+      setError('Please select a file first.');
+      return;
+    }
 
-  const handleWidgetRemoveCancel = (widgetId) => {
-    setWidgetsToRemove((prevWidgets) => prevWidgets.filter((id) => id !== widgetId));
-  };
+    setIsLoading(true);
+    setError(null);
 
-  const handleConfirmRemove = () => {
-    const updatedData = widgetData.map((category) => {
-      if (category.category === activeTab) {
-        const updatedWidgets = category.widgets.filter((widget) => !widgetsToRemove.includes(widget.id));
-        return { ...category, widgets: updatedWidgets };
+    Papa.parse(file, {
+      skipEmptyLines: true,
+      complete: (result) => {
+        if (result.errors.length > 0) {
+          setError('Error parsing CSV file. Please check the file format.');
+          setIsLoading(false);
+          return;
+        }
+
+        try {
+          const processedData = processEVData(result.data);
+          setData(processedData);
+          setIsLoading(false);
+        } catch (err) {
+          setError('Error processing data. Please check the file content.');
+          setIsLoading(false);
+        }
+      },
+      header: true,
+      dynamicTyping: true,
+      error: (error) => {
+        setError(`Error reading file: ${error.message}`);
+        setIsLoading(false);
       }
-      return category;
     });
-    setWidgetData(updatedData);
-    setWidgetsToRemove([]);
-  };
-
-  const handleCancelRemove = () => {
-    setWidgetsToRemove([]);
   };
 
   return (
@@ -49,50 +62,24 @@ const Sidebar = ({ onClose }) => {
         >
           <RxCross2 />
         </button>
-      </div>
-      <span className="mx-2 dark:text-white">Personalise your dashboard by adding the following widgets</span>
-      <div className="flex flex-row flex-wrap mb-2 p-4">
-        {categories.map((category) => (
-          <button
-            key={category}
-            className={`pb-2 mx-2 ${activeTab === category ? 'text-blue-800 dark:text-white border-b-blue-800' : 'border-none'} hover:text-blue-800 border hover:border-b-blue-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out`}
-            onClick={() => handleTabChange(category)}
-          >
-            <span className="truncate dark:truncate">{category}</span>
-          </button>
-        ))}
-      </div>
-      <div className="overflow-y-auto h-full dark:overflow-y-auto dark:h-full px-4">
-        {widgetData.find((category) => category.category === activeTab).widgets.map((widget) => (
-          <div key={widget.id} className="flex items-center p-2 mb-2 border border-spacing-8 rounded hover:bg-gray-300 border-solid dark:text-white dark:hover:bg-blue-800">
-            <input
-              type="checkbox"
-              checked={!widgetsToRemove.includes(widget.id)}
-              onChange={() => {
-                if (widgetsToRemove.includes(widget.id)) {
-                  handleWidgetRemoveCancel(widget.id)
-                } else {
-                  handleWidgetRemove(widget.id)
-                }
-              }}
-              className="mr-2"
-            />
-            <span className="text-lg dark:text-white">{widget.name}</span>
-          </div>
-        ))}
-
-        {widgetsToRemove.length > 0 && (
-          <div className="flex justify-end mt-4">
-            <button className="mx-2 bg-transparent hover:bg-blue-800 text-blue-dark font-semibold hover:text-white py-2 px-4 border border-blue hover:border-transparent rounded-md"
-              onClick={handleCancelRemove}>
-              Cancel
-            </button>
-            <button className="bg-transparent hover:bg-blue-800 text-blue-dark font-semibold hover:text-white py-2 px-4 border border-blue hover:border-transparent rounded-md"
-              onClick={handleConfirmRemove}>
-              Confirm
-            </button>
-          </div>
-        )}
+      </div>      
+      <div className="file-upload">
+        <h3>Upload EV Data CSV</h3>
+        <input 
+          type="file" 
+          accept=".csv" 
+          onChange={handleFileChange} 
+          disabled={isLoading}
+        />
+        <button 
+          className="flex items-center rounded-md m-3 p-2 text-sm dark:bg-[#1F1F1F] bg-white border dark:border-[#343A40] text-black dark:text-white"
+          onClick={handleFileUpload} 
+          disabled={!file || isLoading}
+        >
+          {isLoading ? 'Processing...' : 'Upload and Process'}
+        </button>
+        {error && <p className="error">{error}</p>}
+        {isLoading && <p>Loading... Please wait.</p>}
       </div>
     </div>
   );
