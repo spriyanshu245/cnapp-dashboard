@@ -3,7 +3,7 @@ import { MdOutlinePersonOutline } from "react-icons/md";
 import ThemeToggle from "./ThemeToggle";
 
 
-function TopBar({onFilter}) {
+function TopBar() {
   const [searchInput, setSearchInput] = useState('');
 
 const handleSearch = (event) => {
