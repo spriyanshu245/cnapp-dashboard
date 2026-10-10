@@ -1,19 +1,13 @@
-import { useState } from 'react';
 import MainPage from "../components/MainPage";
 import TopBar from "../components/TopBar";
 
-function Dashboard(props) {
-  const [data, setData] = useState([]);
-
-  const handleFilter = (newData) => {
-    setData(newData);
-  };
-    return (
-      <div className="h-screen w-screen dark:bg-black bg-[#ECEFF3]">
-        <TopBar onFilter = {handleFilter}/>
-        <MainPage filteredWidget = {data}/>
-      </div>
-    );
-  }
+function Dashboard() {
+  return (
+    <div className="min-h-screen w-full dark:bg-black bg-[#ECEFF3]">
+      <TopBar />
+      <MainPage />
+    </div>
+  );
+}
 
 export default Dashboard;

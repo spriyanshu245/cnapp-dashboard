@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Staggered card entrances (transform + opacity only; disabled for reduced motion) */
+@keyframes chart-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.chart-enter {
+  opacity: 0;
+  animation: chart-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-enter {
+    opacity: 1;
+    animation: none;
+  }
+}
