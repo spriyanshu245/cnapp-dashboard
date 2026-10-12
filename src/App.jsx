@@ -1,18 +1,10 @@
-import React from "react";
-import { HashRouter, Route, Routes } from "react-router-dom"
-import Dashboard from "./pages/Dashboard"
+import { HashRouter } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
 
-
-function App() {
+export default function App() {
   return (
-    <div>
-      <HashRouter>
-        <Routes>
-        <Route path="/" element={<Dashboard/>}/>
-        </Routes>
-      </HashRouter>
-    </div>
-  )
+    <HashRouter>
+      <Dashboard />
+    </HashRouter>
+  );
 }
-
-export default App

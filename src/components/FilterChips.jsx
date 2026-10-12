@@ -1,19 +1,12 @@
 import { BsFilter } from 'react-icons/bs';
 
-const LABELS = {
-  type: 'Vehicle type',
-  make: 'Make',
-  county: 'County',
-  year: 'Model year',
-};
-
-const shortType = (v) =>
-  v === 'Battery Electric Vehicle (BEV)' ? 'BEV' : v === 'Plug-in Hybrid Electric Vehicle (PHEV)' ? 'PHEV' : v;
+const shortVal = (v) =>
+  v === 'Battery Electric Vehicle (BEV)' ? 'BEV' : v === 'Plug-in Hybrid Electric Vehicle (PHEV)' ? 'PHEV' : String(v);
 
 /**
- * Active cross-filter chips with per-chip clear + clear-all.
+ * Active cross-filter chips (generic across datasets) with per-chip clear + clear-all.
  */
-export default function FilterChips({ filters, onClearOne, onClearAll }) {
+export default function FilterChips({ filters, labels = {}, onClearOne, onClearAll }) {
   const active = Object.entries(filters).filter(([, v]) => v !== null && v !== undefined);
 
   return (
@@ -23,7 +16,7 @@ export default function FilterChips({ filters, onClearOne, onClearAll }) {
       </span>
       {active.length === 0 && (
         <span className="text-xs text-gray-400 dark:text-gray-500">
-          Click any pie slice, bar or data point to cross-filter every chart
+          Click any bar or segment to cross-filter the dashboard
         </span>
       )}
       {active.map(([key, value]) => (
@@ -33,10 +26,8 @@ export default function FilterChips({ filters, onClearOne, onClearAll }) {
           className="group flex items-center gap-1.5 rounded-full bg-blue-100 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-800 px-3 py-1 text-xs font-medium text-blue-800 dark:text-blue-200 transition hover:bg-blue-200 dark:hover:bg-blue-900/70"
           title="Remove filter"
         >
-          <span className="text-blue-500 dark:text-blue-400">{LABELS[key]}:</span>
-          <span className="max-w-[180px] truncate font-semibold">
-            {key === 'type' ? shortType(value) : String(value)}
-          </span>
+          <span className="text-blue-500 dark:text-blue-400">{labels[key] || key}:</span>
+          <span className="max-w-[180px] truncate font-semibold">{shortVal(value)}</span>
           <span className="text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-200">✕</span>
         </button>
       ))}
